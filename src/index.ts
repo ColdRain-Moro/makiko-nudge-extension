@@ -1,16 +1,19 @@
-import { GroupMessageEvent, Listener, subscribeEvent } from "makiko-api"
+import { Listener, subscribeEvent } from "makiko-api"
 
 let listener: Listener
+
+type NudgeEvent = net.mamoe.mirai.event.events.NudgeEvent
+const NudgeEvent = net.mamoe.mirai.event.events.NudgeEvent
 
 /**
  * 
  * 插件加载
  */
 // @ts-ignore
-this.onLoad = () => {
-    listener = subscribeEvent<GroupMessageEvent>(GroupMessageEvent, (e) => {
-        if (e.getMessage().contentToString() == "3G") {
-            e.getGroup().sendMessage("重现3g荣光, 我辈义不容辞！")
+global.onLoad = () => {
+    listener = subscribeEvent<NudgeEvent>(NudgeEvent, (event) => {
+        if (event.getTarget().getId() == event.getBot().getId()) {
+            event.getFrom().nudge().sendTo(event.getSubject())
         }
     })
 }
@@ -19,6 +22,6 @@ this.onLoad = () => {
  * 插件卸载
  */
 // @ts-ignore
-this.onUnload = () => {
+global.onUnload = () => {
     listener.complete()
 }
